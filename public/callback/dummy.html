@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>EVE SSO Authorization callback page.</title>
+    </head>
+
+    <body>
+        <div>EVE SSO Authorization succeeded!!</div>
+        <script>
+            if (window.opener !== null) {
+                window.addEventListener("load", e => {
+                    window.opener.postMessage(location.href, "*");
+                });
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "name": "eve-character-contacts-view",
+  "version": "1.0.0",
+  "description": "Displays data obtained from ESI endpoint /characters/{character_id}/contacts/",
+  "keywords": [
+    "EVE online",
+    "EVE",
+    "contacts"
+  ],
+  "main": "src/index.tsx",
+  "license": "AGPL-3.0-only",
+  "author": {
+    "name": "jeffy-g",
+    "email": "hirotom1107@gmail.com"
+  },
+  "engines": {
+    "node": ">=9"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.4.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.10",
+    "@types/react-dom": "^16.8.3",
+    "node-sass": "*",
+    "typescript": "^3.6.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "sass": "node-sass ./src/styles.scss ./public/styles.css"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

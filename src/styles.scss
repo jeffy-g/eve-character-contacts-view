@@ -1,0 +1,147 @@
+@charset "utf8";
+/*!
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    <one line to give the program's name and a brief idea of what it does.>
+    Copyright (C) 2019  jeffy-g hirotom1107@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+*/
+html {
+    font-size: 16px;
+}
+
+$DURATOIN: 800ms;
+body {
+    margin: 0;
+    font-family: consolas;
+    font-size: 13px;
+    transition: background-color #{$DURATOIN} ease, color #{$DURATOIN} ease;
+    user-select: none;
+    &.dark {
+        background-color: black;
+        color: whitesmoke
+    }
+}
+
+.auth-button {
+    position: absolute;
+    top: 17px;
+    left: 18px;
+    cursor: pointer;
+    & + .theme-dark {
+        position: absolute;
+    }
+}
+
+.chart-title {
+    text-align: center;
+    z-index: 500;
+}
+
+$PAGEs-MARGIN: 10px;
+//
+// for src/components/views/character/yealy-stats.tsx
+//
+.app-container {
+    --x-margin: #{$PAGEs-MARGIN};
+    --x-margin-x2: var(--x-margin) + var(--x-margin);
+    // --ys-width: calc(100vw - var(--x-margin-x2));
+
+    // margin: 44px var(--x-margin) 20px;
+    // position: absolute;
+    // top: 8px;
+    // left: 0px;
+    margin: var(--x-margin) var(--x-margin) 20px;
+    position: relative;
+    // width: var(--ys-width);
+    width: calc(100vw - var(--x-margin-x2) - 18px);
+    // DEVNOTE: substruct(margin-top + margin-bottom + top);
+    height: calc(100vh - 44px - 28px);
+    // bottom: 0px;
+    // right: 0px;
+    box-sizing: border-box;
+    padding: 9px;
+    padding-bottom: 18px;
+    border-radius: 4px;
+}
+
+// DEVNOTE: 190712
+.contact-tooltip {
+    white-space: pre;
+    // search: px to rem
+    font-size: 0.733rem!important;
+    padding: 6px 10px;
+    width: auto;
+    max-width: none;
+}
+
+//
+// [standing color]:
+//
+//   10.0 (Excellent :blue)
+//   5.0  (Good :lightblue)
+//   0.0  (Neutral :whitesmoke)
+//  -5.0  (Bad :orange)
+// -10.0  (Terrible :red)
+//
+$CHIP_SIZE: 28px;
+.eve-character-chip {
+    height: $CHIP_SIZE !important;
+    margin: 2px !important;
+    .chip-avatar {
+        width: $CHIP_SIZE !important;
+        height: $CHIP_SIZE !important;
+        margin-right: -6px !important;
+    }
+
+    // DEVNOTE: lightblue は少し明るすぎるので調整した.
+    $standing-colors: blue, #2fccff, whitesmoke, orange, red;
+    $standings: 10, 5, 0, -5, -10;
+    @for $i from 1 through 5 {
+        $color: nth($standing-colors, $i);
+        $standing: nth($standings, $i);
+        &[data-standing="#{$standing}"] {
+            background-color: $color;
+            color: if($color == blue, lighten($color, 48%), darken($color, 48%));
+        }
+    }
+    // &[data-standing="10"] {
+    //     $bg: blue;
+    //     background-color: $bg;
+    //     color: darken($bg, 48%);
+    // }
+    // &[data-standing="5"] {
+    //     $bg: lightblue;
+    //     background-color: $bg;
+    //     color: darken($bg, 48%);
+    // }
+    // &[data-standing="-5"] {
+    //     $bg: orange;
+    //     background-color: $bg;
+    //     color: darken($bg, 48%);
+    // }
+    // &[data-standing="-10"] {
+    //     $bg: red;
+    //     background-color: $bg;
+    //     color: darken($bg, 48%);
+    // }
+}
+
+
+// .native-select {
+//   margin: 2px 4px 8px 0;
+//   border-radius: 3px;
+//   border-color: rgba(192, 192, 192, 0.53);
+// }
