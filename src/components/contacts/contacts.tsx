@@ -27,222 +27,293 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 import * as React from "react";
 
-// @meterial-ui components
-import Avatar from "@material-ui/core/Avatar";
-import Chip, { ChipProps } from "@material-ui/core/Chip";
-import Tooltip from "@material-ui/core/Tooltip";
-// import Icon from "@material-ui/core/Icon";
+import {
+    EVEContactChip,
+    EVEContactChipProps
+} from "./contact-chip";
 
-import * as util from "../../util";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //                            constants, types
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*
-//
-// [standing color]:
-//
-//   10.0 (Excellent :blue)
-//   5.0  (Good :lightblue)
-//   0.0  (Neutral :whitesmoke)
-//  -5.0  (Bad :orange)
-// -10.0  (Terrible :red)
-//
-*/
-// const CHIP_SIZE = 28;
-// const styles: StringMap<React.CSSProperties> = {
-//     chip: {
-//         height: CHIP_SIZE,
-//         margin: 2,
-//     },
-//     avatar: {
-//         width: CHIP_SIZE,
-//         height: CHIP_SIZE,
-//         "marginRight": -6,
-//     }
-// };
-const classes: StringMap<StringMap<string>> = {
-    chip: {
-        root: "eve-character-chip"
-    },
-    chipSmall: {
-        root: "eve-character-chip small"
-    },
-    avatar: {
-        root: "chip-avatar",
-        // img: "small"
-    }
+type TContactChip = ReturnType<typeof EVEContactChip>;
+type TContactChipInstance = ReactInstanceType<typeof EVEContactChip>;
+type TChipSizes = EVEContactChipProps["size"];
+
+/**
+ * make the EVEContacts state slightly changeable
+ */
+export interface IEVEContactsAccessor {
+    /**
+     * change the size of this set of contacts
+     * 
+     * @param size 
+     */
+    setSize(size?: TChipSizes): void;
+    /**
+     * revert deleted contacts
+     */
+    reset(): void;
+}
+
+/**
+ * Defines the props for the `EVEContacts` component
+ */
+export type EVEContactsPops = {
+    /**
+     * 
+     */
+    contacts: EVEContact[];
+    /**
+     * 
+     */
+    labels: EVEContactLabel[];
+    /**
+     * 
+     */
+    characterData: EVECharacterData;
+
+    /**
+     * Set the size of the chip component.  
+     * can select "small" or "medium"
+     */
+    size?: TChipSizes;
+    /**
+     * 
+     */
+    accessor?: IEVEContactsAccessor;
 };
+
+/**
+ * Defines the state used inside the `EVEContacts` component
+ */
+type TEVEContactsState = {
+    /**
+     * use for reset state, also revert removed contacts to first state
+     */
+    reset: number;
+    /**
+     * can select "small" or "medium"
+     * @see EVEContactsPops["size"]
+     */
+    currentSize: TChipSizes;
+    /**
+     * currently rendered chip components
+     */
+    elements: TContactChip[];
+};
+
+/**
+ * this feature will be remove
+ * @deprecated
+ */
+const eveContactsMap: StringMap<EVEContact[]> = {};
+/**
+ * this feature will be remove
+ * 
+ * @param character_id 
+ * @param contancts 
+ * @deprecated
+ */
+const cacheContacts = (character_id: EVEId, contancts: EVEContact[]) => {
+    let map = eveContactsMap[character_id];
+    if (!map) {
+        map = [] as EVEContact[];
+    }
+    eveContactsMap[character_id] = map.concat(contancts);
+    // console.log(eveContactsMap);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //                         module vars, functions.
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /**
- * DEVNOTE: character image type are "jpg".
- * @param kinds 
- * @param id 
- */
-const getAvatarImageUri = (
-    kinds: string,
-    id: number,
-    // extension: "png" | "jpg"
-): string => {
-    const extension = kinds === "character" ? "jpg" : "png";
-    return `https://image.eveonline.com/${kinds}/${id}_32.${extension}`;
-};
-/**
+ * mimics the `setState` method of `React.Component`
  * 
- * @param id 
- * @param kinds "character" | "corporation" | "alliance" | "faction"
+ * @param state 
  */
-const createAvatar = (
-    id: number,
-    kinds: "character" | "corporation" | "alliance" | "faction"
-): ReactInstanceType<typeof Avatar> => {
-    // type AvatarProops = React.ComponentPropsWithoutRef<typeof Avatar>;
-    // const props: AvatarProops = {
-    // };
-    // const ext = type === "character" ? "jpg" : "png";
-    return <Avatar
-        classes={classes.avatar}
-        src={getAvatarImageUri(kinds, id)}
-        // sizes=""
-    />;
-};
+function useSetState<T extends {}>(state: Partial<T> = {}) {
+    const [cacheState, update] = React.useState<T>(state as T);
+    const merge = (newState: Partial<T>) => {
+        update(
+            (prev: T) => ({ ...prev, ...newState })
+        );
+    };
+    return [cacheState, merge] as [T, typeof merge];
+}
 
-type EVEContactChipProps = {
-    contact: EVEContact;
-    labelData: EVEContactLabel[];
-    size?: ChipProps["size"];
-    onDelete?: () => void;
-};
-/**
- * 
- */
-const EVEContactChip = React.memo(
-    ({ contact, labelData, size, onDelete }: EVEContactChipProps) => {
-
-        const labels: string[] = [];
-        if (Array.isArray(contact.label_ids)) {
-            labelData.filter(data => {
-                return contact.label_ids!.includes(data.label_id);
-            }).forEach(data => labels.push(data.label_name));
-        }
-
-        return <Tooltip title={createTitle(contact) + `labels: [${labels.join(", ")}]`}
-            // PopperProps={{ style: { whiteSpace: "pre", fontSize: "1.5rem", width: "auto" } }} -> this were meaningless...
-            classes={{ tooltip: "contact-tooltip" }}
-            // placement="top-start"
-            // apply style to root element.
-            // style={{ maxWidth: "none" }}
-            disableFocusListener
-        >
-            <Chip classes={classes.chipSmall} // chip
-                data-standing={contact.standing}
-                clickable
-                avatar={createAvatar(contact.contact_id, contact.contact_type)}
-                // DEVNOTE: currently, height 24px
-                size={size} // enlarge by Avatar image...
-                label={contact.name}
-                // event extends React.SyntheticEvent<any, Event>
-                onDelete={onDelete}
-                // title={createTitle(contact)}
-            />
-        </Tooltip>;
-    },
-    (pp, np) => pp.contact.contact_id === np.contact.contact_id
-);
-
-/**
- * 
- */
-const eveContactsMap: StringMap<EVEContact[]> = {};
-
-// const handleDelete = (e: any) => {
-//     e.persist();
-//     console.log(e);
-// };
-
-/**
- * 
- */
-const createTitle = util.template`\
-contact_id: ${"contact_id"}
-contact_type: ${"contact_type"}
-
-is_blocked?: ${"is_blocked"}
-is_watched?: ${"is_watched"}
-
-standing: ${"standing"}
-label_ids: ${"label_ids"}
-`;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //                       class or namespace declare.
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /**
+ * + normally, this component use as each standing group.  
+ *   however,  can mix different standing contacts.
  * 
  * @param props 
  */
-const EVEContacts = (
-    props: {
-        contacts: EVEContact[],
-        labels: EVEContactLabel[],
-        characterData: EVECharacterData
-    }
-) => {
-    type TContactChip = ReturnType<typeof EVEContactChip>;
-    const { contacts, labels, characterData: { character_id } } = props;
-    // DEVNOTE: cache contacts of character_id
-    eveContactsMap[character_id] = contacts;
-    // console.log(eveContactsMap);
-    // const elementsRef = React.useRef<TContactChip[]>();
-    /* eslint-disable */
-    const elements = React.useMemo(() => {
-        console.log("_EVEContacts::useMemo");
-        const elements: TContactChip[] = [];
-        for (const contact of contacts) {
-            // const standing = contact.standing || void 0;
-            const chip = <EVEContactChip
-                key={contact.contact_id}
-                size="small"
-                contact={contact}
-                labelData={labels}
-                onDelete={() => clickHandler(chip)}
-            />;
-            elements.push(chip);
-        }
-        return elements;
-    }, [character_id]);
-    /* eslint-enable */
+const EVEContacts = (props: EVEContactsPops) => {
 
-    let [refElements, updateElementsIfNotSameRef] = React.useState(elements);
-    const clickHandler = (instance: ReactInstanceType<typeof EVEContactChip>) => {
-        // console.log("_EVEContacts::clickHandler");
-        const index = refElements.findIndex(e => e === instance);
-        const e = refElements.splice(index, 1);
-        console.log(e, refElements, instance);
-        updateElementsIfNotSameRef(refElements.concat());
-        // updateElementsIfNotSameRef(prev => {
-        //     const index = prev.findIndex(e => e === instance);
-        //     const e = prev.splice(index, 1);
-        //     console.log(e, prev, instance);
-        //     return prev.concat();
-        // });
+    const { contacts, labels, characterData: { character_id }, size, accessor } = props;
+    // DEVNOTE: cache contacts of character_id
+    cacheContacts(character_id, contacts);
+
+    const [state, setState, refElements] = useEVEContactsState(size);
+    // const deleter = (instance: TContactChipInstance) => { // fix closure problem at "instance" parameter
+    const deleter = (characterId?: string) => {
+        if (characterId === void 0) {
+            console.log("characterId is undefined...");
+            return;
+        }
+        console.log("_EVEContacts::deleter");
+        const elements = refElements.current as TContactChipInstance[];
+        const nid = parseInt(characterId);
+        const index = elements.findIndex(
+            (e: TContactChipInstance) => e.props.contact.contact_id === nid
+        );
+        if (index !== -1) {
+            // const e =
+            elements.splice(index, 1);
+            // console.log(e, elements, instance);
+            setState({ elements });
+        }
     };
     // clickHandler.name = "clickHandler"; // runtime error!
+    /* eslint-disable */
+    const onDeleteHandler = React.useCallback((e: React.MouseEvent) => {
+        const character_id = e.currentTarget.parentElement!.dataset.cid;
+        deleter(character_id);
+    }, []);
+    /* eslint-enable */
 
-    // const clickHandler = React.useCallback((instance: ReactInstanceType<typeof EVEContactChip>) => {
-    //     // console.log("_EVEContacts::useCallback");
-    //     const index = refElements.findIndex(e => e === instance);
-    //     const e = refElements.splice(index, 1);
-    //     console.log(e, refElements, instance);
-    //     updateElementsIfNotSameRef(refElements.concat());
-    // }, []); // eslint-disable-line
+    const shiftSize = (size: TChipSizes) => {
+        console.log("_EVEContacts::shiftSize");
+        const elements = refElements.current;
+        const nextElements: TContactChip[] = [];
+        for (let index = 0, end = elements.length; index < end;) {
+            const e = elements[index];
+            nextElements[index++] = React.cloneElement(e, { size });
+        }
+        setState({
+            currentSize: size,
+            elements: nextElements
+        });
+    };
+
+    // component.didmount
+    didMountOrReset(
+        character_id, state,
+        contacts, labels,
+        setState, onDeleteHandler
+    );
+    // setup
+    setUpAccessor(
+        state, shiftSize, setState, accessor
+    );
 
     return <>
-        {refElements}
+        {refElements.current}
     </>;
 };
+
+/**
+ * 
+ * @param initialSize 
+ */
+function useEVEContactsState(initialSize: TEVEContactsState["currentSize"]) {
+    const refElements = React.useRef<TContactChip[]>(null as unknown as TContactChip[]);
+    const [state, setState] = useSetState<TEVEContactsState>({
+        reset: 0,
+        currentSize: initialSize,
+        elements: null as unknown as TContactChip[],
+    });
+    // DEVNOTE: need always assign as reference for util functions closure
+    refElements.current = state.elements;
+
+    return [state, setState, refElements] as [
+        TEVEContactsState, typeof setState, typeof refElements
+    ];
+}
+
+/**
+ * 
+ * @param character_id 
+ * @param state 
+ * @param contacts 
+ * @param labels 
+ * @param setState 
+ * @param onDeleteHandler 
+ */
+function didMountOrReset(
+    character_id: EVEId, state: TEVEContactsState,
+    contacts: EVEContact[], labels: EVEContactLabel[],
+    setState: TStdFunction, onDeleteHandler: TStdFunction
+) {
+    /* eslint-disable */
+    // component.didmount
+    React.useEffect(() => {
+        console.log("_EVEContacts::didMountOrReset, reset: %s", state.reset);
+
+        let index = 0;
+        const elements: TContactChip[] = [];
+        for (const contact of contacts) {
+            // const chip = <EVEContactChip
+            //     key={contact.contact_id}
+            //     size={state.currentSize}
+            //     contact={contact}
+            //     labelData={labels}
+            //     onDelete={(e: React.MouseEvent) => {
+            //         deleter(chip);
+            //     }} // also this code can works
+            //     data-cid={contact.contact_id}
+            // />;
+            // elements[index++] = chip;
+            elements[index++] = <EVEContactChip
+                key={contact.contact_id}
+                size={state.currentSize}
+                contact={contact}
+                labelData={labels}
+                onDelete={onDeleteHandler}
+                data-cid={contact.contact_id}
+            />;
+        }
+        setState({ elements });
+    }, [character_id, state.reset]);
+    /* eslint-enable */
+}
+
+/**
+ * 
+ * @param state 
+ * @param shiftSize 
+ * @param setState 
+ * @param accessor 
+ */
+function setUpAccessor(
+    state: TEVEContactsState,
+    shiftSize: TStdFunction, setState: TStdFunction,
+    accessor?: IEVEContactsAccessor,
+) {
+    /* eslint-disable */
+    React.useEffect(() => {
+        // to do at mount time
+        let resetor = state.reset;
+        if (accessor && !accessor.setSize) {
+            accessor.setSize = (size) => shiftSize(size);
+            accessor.reset = () => {
+                setState({ reset: ++resetor });
+            };
+        }
+        // at unmount
+        return () => {
+            if (accessor) {
+                delete accessor.setSize;
+                delete accessor.reset;
+            }
+        };
+    }, [accessor]);
+    /* eslint-enable */
+}
 
 export default EVEContacts;

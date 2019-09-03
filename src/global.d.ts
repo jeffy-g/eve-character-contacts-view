@@ -76,6 +76,9 @@ type ReactInstanceType<
   P = React.ComponentPropsWithRef<T>
 > = React.ComponentElement<P, React.Component<P>>;
 
+type TStdFunction = (...args: any[]) => any;
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //                           EVE ESI data types etc.
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

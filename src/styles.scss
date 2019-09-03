@@ -45,7 +45,7 @@ body {
     }
 }
 
-.chart-title {
+.app-title {
     text-align: center;
     z-index: 500;
 }
@@ -79,12 +79,13 @@ $PAGEs-MARGIN: 10px;
 
 // DEVNOTE: 190712
 .contact-tooltip {
-    white-space: pre;
+    box-sizing: border-box;
+    white-space: pre!important;
     // search: px to rem
+    width: auto!important;
     font-size: 0.733rem!important;
-    padding: 6px 10px;
-    width: auto;
-    max-width: none;
+    padding: 6px 10px!important;
+    max-width: none!important;
 }
 
 //
@@ -98,17 +99,14 @@ $PAGEs-MARGIN: 10px;
 //
 $CHIP_SIZE: 28px;
 $CHIP_SIZE-small: 24px;
-div.eve-character-chip {
+.eve-character-chip {
     margin: 2px;
     height: $CHIP_SIZE;
     .chip-avatar {
+        // transition: width 300ms ease, height 300ms ease;
         width: $CHIP_SIZE;
         height: $CHIP_SIZE;
         margin-right: -6px;
-        // img {
-        //     width: 24px;
-        //     height: 24px;
-        // }
     }
 
     &.small {
@@ -116,14 +114,15 @@ div.eve-character-chip {
         .chip-avatar {
             width: $CHIP_SIZE-small;
             height: $CHIP_SIZE-small;
-            img {
-                width: 24px;
-                height: 24px;
-            }
+            // DEVNOTE: kept of size at image loading time
+            // img {
+            //     // width: $CHIP_SIZE-small;
+            //     // height: $CHIP_SIZE-small;
+            // }
         }
     }
 
-    // DEVNOTE: lightblue は少し明るすぎるので調整した.
+    // DEVNOTE: lightblue is a little too bright, so I adjusted it.
     $standing-colors: blue, #2fccff, whitesmoke, orange, red;
     $standings: 10, 5, 0, -5, -10;
     @for $i from 1 through 5 {
