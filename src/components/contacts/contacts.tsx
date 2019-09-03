@@ -29,7 +29,7 @@ import * as React from "react";
 
 // @meterial-ui components
 import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
+import Chip, { ChipProps } from "@material-ui/core/Chip";
 import Tooltip from "@material-ui/core/Tooltip";
 // import Icon from "@material-ui/core/Icon";
 
@@ -65,8 +65,12 @@ const classes: StringMap<StringMap<string>> = {
     chip: {
         root: "eve-character-chip"
     },
+    chipSmall: {
+        root: "eve-character-chip small"
+    },
     avatar: {
-        root: "chip-avatar"
+        root: "chip-avatar",
+        // img: "small"
     }
 };
 
@@ -99,18 +103,24 @@ const createAvatar = (
     // const props: AvatarProops = {
     // };
     // const ext = type === "character" ? "jpg" : "png";
-    return <Avatar classes={classes.avatar} src={getAvatarImageUri(kinds, id)} />;
+    return <Avatar
+        classes={classes.avatar}
+        src={getAvatarImageUri(kinds, id)}
+        // sizes=""
+    />;
 };
 
+type EVEContactChipProps = {
+    contact: EVEContact;
+    labelData: EVEContactLabel[];
+    size?: ChipProps["size"];
+    onDelete?: () => void;
+};
 /**
  * 
  */
 const EVEContactChip = React.memo(
-    ({ contact, labelData, onDelete }: {
-        contact: EVEContact;
-        labelData: EVEContactLabel[];
-        onDelete?: () => void;
-    }) => {
+    ({ contact, labelData, size, onDelete }: EVEContactChipProps) => {
 
         const labels: string[] = [];
         if (Array.isArray(contact.label_ids)) {
@@ -127,11 +137,12 @@ const EVEContactChip = React.memo(
             // style={{ maxWidth: "none" }}
             disableFocusListener
         >
-            <Chip classes={classes.chip}
+            <Chip classes={classes.chipSmall} // chip
                 data-standing={contact.standing}
                 clickable
                 avatar={createAvatar(contact.contact_id, contact.contact_type)}
-                // size="small" // enlarge by Avatar image...
+                // DEVNOTE: currently, height 24px
+                size={size} // enlarge by Avatar image...
                 label={contact.name}
                 // event extends React.SyntheticEvent<any, Event>
                 onDelete={onDelete}
@@ -194,6 +205,7 @@ const EVEContacts = (
             // const standing = contact.standing || void 0;
             const chip = <EVEContactChip
                 key={contact.contact_id}
+                size="small"
                 contact={contact}
                 labelData={labels}
                 onDelete={() => clickHandler(chip)}
@@ -218,6 +230,8 @@ const EVEContacts = (
         //     return prev.concat();
         // });
     };
+    // clickHandler.name = "clickHandler"; // runtime error!
+
     // const clickHandler = React.useCallback((instance: ReactInstanceType<typeof EVEContactChip>) => {
     //     // console.log("_EVEContacts::useCallback");
     //     const index = refElements.findIndex(e => e === instance);

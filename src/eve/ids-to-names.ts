@@ -22,6 +22,19 @@ import * as NsESIClient from "./api/esi-client";
 
 
 /**
+ * 
+ */
+// type UniverseNamesFragment = Pick<EVEUniverseNames, "category"> & Pick<EVEUniverseNames, "name"> & {
+type UniverseNamesFragment<T> = {
+    name: string;
+    /** "station", "solar_system", "structure" */
+    category: T;
+};
+
+type UniverseNamesFragmentDefault = UniverseNamesFragment<EVEUniverseCategory>;
+// type UniverseNamesFragmentLocation = UniverseNamesFragment<"station" | "solar_system" | "structure">;
+    
+/**
  * idb data type.
  */
 type UnameRegistry = StringMap<UniverseNamesFragmentDefault>;
@@ -48,8 +61,10 @@ export default class IdsToNames /* implements IBulkIDResolver */ {
      * 
      * **excludes already pushed id.**
      * 
-     * CAUTION: max id count are __1000__.(limitation by ESI endpoint)  
-     *  so need check pushed count.
+     * CAUTION: ~~max id count are __1000__.(limitation by ESI endpoint)  
+     *  so need check pushed count.~~
+     * 
+     * + **above problem is already fixed**
      * 
      * @param typeId any item type_id etc...
      * @returns count of current pushed id
@@ -57,11 +72,20 @@ export default class IdsToNames /* implements IBulkIDResolver */ {
     addId(typeId: number): number {
         if (this.resolving) return -1;
         const ids = this.ids;
-        if (typeId > 0 && !ids.includes(typeId)) {
+        if (typeId > 0 && !ids.includes(typeId) && !unameRegistry[typeId]) {
             return ids.push(typeId);
         }
         return ids.length;
     }
+    /**
+     * "typeId"s **MUST** available type id.
+     * 
+     * + If id is duplicated, it is not added.
+     * 
+     * + also, if type data already exists in data registry, it will not be added.
+     * 
+     * @param typeIds 
+     */
     addIds(typeIds: number[]): number {
         if (this.resolving) return -1;
 
@@ -73,77 +97,16 @@ export default class IdsToNames /* implements IBulkIDResolver */ {
         // }
         // return ids.length;
         const sids = new Set([...this.ids, ...typeIds]);
-        return (this.ids = [...sids]).length;
-    }
-    /**
-     * resolve ids each 1000 units
-     */
-    async batchResolve(esi?: IESIClient) {
-        const eveIds = this.ids;
-        // has not ids...
-        if (eveIds.length === 0) {
-            return false;
-        }
-
-        // step 1. filter pushed ids by unameRegistry.
-        const unknownIds = eveIds.filter((n/* , idx, self */) => {
-            return unameRegistry[n] === void 0;// && self.indexOf(n) === idx;
-        });
-
-        // 8/14/2018
-        this.resolving = true;
-        let newEntries = false;
-        // purge added ids
-        eveIds.length = 0;
-
-        if (unknownIds.length > 0) {
-            !esi && (esi = NsESIClient.getInstance());
-            for (
-                let ptr = 0, last = 1e3, l = unknownIds.length;
-                ptr < l;
-                ptr = last, last += 1e3
-            ) {
-                let universes: EVEUniverseNames[] | undefined;
-                // try {
-                //     console.log("IdsToNames::resolve.esi.post");
-                //     // v2, v3
-                //     universes = await esi.post<typeof universes>("/universe/names/", { body: unknownIds.slice(ptr, last) });
-                //     console.log("IdsToNames::resolve.esi.post - done");
-                // } catch (e) {
-                //     this.resolving = false;
-                //     console.log("IdsToNames::resolve.esi.post - fail");
-                //     throw e;
-                // }
-                console.log("IdsToNames::resolve.esi.post");
-                await esi.post<typeof universes>("/universe/names/", { body: unknownIds.slice(ptr, last) }).then(data => {
-                    universes = data;
-                    console.log("IdsToNames::resolve.esi.post - done");
-                }).catch(reason => {
-					universes = void 0;
-                    console.log("IdsToNames::resolve.esi.post - failed, range=%s to %s", ptr, last);
-                    return reason;
-                });
-                // step 3. register response data to "unameRegistry" then save data.
-                if (universes) {
-                    for (const u of universes) {
-                        unameRegistry[u.id] = {
-                            name: u.name,
-                            category: u.category
-                        };
-                    }
-                    newEntries = true;
-                }
-            }
-        }
-
-        this.resolving = false;
-        return newEntries;
+        const filtered = [...sids].filter(id => !unameRegistry[id]);
+        return (this.ids = filtered).length;
     }
 
     /**
+     * #### resolve ids each 1000 units
+     * 
      * query ESI endpoint [/universe/names/](https://esi.evetech.net/ui/#/Universe/post_universe_names) by current pushed ids.
      * 
-     * + NOTE: this method purge added ids internally.
+     * + also, **clear currently added ids** by this method
      * 
      * @param esi use request with this esi instance.(?)
      * @returns when requested returns true.
@@ -157,44 +120,51 @@ export default class IdsToNames /* implements IBulkIDResolver */ {
 
         // 8/14/2018
         this.resolving = true;
-        let newEntries = false;
+        let newcomer = false;
 
-        // step 1. filter pushed ids by unameRegistry.
-        const unknownIds = eveIds.filter((n/* , idx, self */) => {
-            return unameRegistry[n] === void 0;// && self.indexOf(n) === idx;
-        });
-        // purge added ids
-        eveIds.length = 0;
-        // this.clear();
+        if (eveIds.length > 0) {
 
-        if (unknownIds.length > 0) {
-            // step 2. do ESI endpoint "universe/names".
             !esi && (esi = NsESIClient.getInstance());
-            let universes: EVEUniverseNames[];
-            try {
+            type TEVEUniverseNames = EVEUniverseNames[];
+            const promises: Promise<TEVEUniverseNames>[] = [];
+
+            for (
+                let ptr = 0, last = 1e3, l = eveIds.length, idx = 0;
+                ptr < l;
+                ptr = last, last += 1e3
+            ) {
                 console.log("IdsToNames::resolve.esi.post");
-                // v2, v3
-                universes = await esi.post<typeof universes>("/universe/names/", { body: unknownIds });
-                console.log("IdsToNames::resolve.esi.post - done");
-            } catch (e) {
-                this.resolving = false;
-                console.log("IdsToNames::resolve.esi.post - fail");
-                throw e;
+
+                const task = esi.post<TEVEUniverseNames>("/universe/names/", { body: eveIds.slice(ptr, last) }).then(universes => {
+                    console.log("IdsToNames::resolve.esi.post - done");
+                    // step 3. register response data to "unameRegistry" then save data.
+                    if (universes) {
+                        for (const u of universes) {
+                            unameRegistry[u.id] = {
+                                name: u.name,
+                                category: u.category
+                            };
+                        }
+                    }
+                }).catch(reason => {
+					// universes = void 0;
+                    console.log("IdsToNames::resolve.esi.post - failed, range=%s to %s", ptr, last);
+                    return reason;
+                });
+
+                promises[idx++] = task;
             }
-            // step 3. register response data to "unameRegistry" then save data.
-            if (universes) {
-                for (const u of universes) {
-                    unameRegistry[u.id] = {
-                        name: u.name,
-                        category: u.category
-                    };
-                }
-                newEntries = true;
-            }
+
+            // wait for all esi request done
+            await Promise.all(promises);
+            newcomer = true;
         }
 
+        // purge added ids
+        eveIds.length = 0;
         this.resolving = false;
-        return newEntries;
+
+        return newcomer;
     }
 
     /**

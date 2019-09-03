@@ -97,13 +97,30 @@ $PAGEs-MARGIN: 10px;
 // -10.0  (Terrible :red)
 //
 $CHIP_SIZE: 28px;
-.eve-character-chip {
-    height: $CHIP_SIZE !important;
-    margin: 2px !important;
+$CHIP_SIZE-small: 24px;
+div.eve-character-chip {
+    margin: 2px;
+    height: $CHIP_SIZE;
     .chip-avatar {
-        width: $CHIP_SIZE !important;
-        height: $CHIP_SIZE !important;
-        margin-right: -6px !important;
+        width: $CHIP_SIZE;
+        height: $CHIP_SIZE;
+        margin-right: -6px;
+        // img {
+        //     width: 24px;
+        //     height: 24px;
+        // }
+    }
+
+    &.small {
+        height: $CHIP_SIZE-small;
+        .chip-avatar {
+            width: $CHIP_SIZE-small;
+            height: $CHIP_SIZE-small;
+            img {
+                width: 24px;
+                height: 24px;
+            }
+        }
     }
 
     // DEVNOTE: lightblue は少し明るすぎるので調整した.

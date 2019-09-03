@@ -91,11 +91,6 @@ type EVECharacterData = {
 type TEVEComponentRenderer<T> = (
   jsonData: T,
   characterData: EVECharacterData
-) => void;
-
-type TEVEComponentRenderer2<T> = (
-  jsonData: T,
-  characterData: EVECharacterData
 ) => Promise<JSX.Element>;
 
 type TAuthorizationCallback = (accessToken: string) => void;
@@ -106,7 +101,7 @@ type TAuthorizationCallback = (accessToken: string) => void;
 /**
  * maybe, i think this only use "universe/**" endpoint.
  */
-type EVEUniverseCategory = "alliance" | "character" | "constellation" | "corporation" | "inventory_type" | "region" | "solar_system" | "station";
+type EVEUniverseCategory = "alliance" | "character" | "constellation" | "corporation" | "inventory_type" | "region" | "solar_system" | "station" | "faction";
 
 /**
  * universe/names
@@ -119,23 +114,6 @@ type EVEUniverseNames = {
     /** e.g - "ynnot erdna" */
     name: string; 
 };
-
-/**
- * 
- */
-// type UniverseNamesFragment = Pick<EVEUniverseNames, "category"> & Pick<EVEUniverseNames, "name"> & {
-type UniverseNamesFragment<T> = {
-    name: string;
-    /** "station", "solar_system", "structure" */
-    category: T;
-    // /** @deprecated will remove this property */
-    // DEVNOTE: 1/7/2019, 7:56:08 PM - commented out this property. It will not be used never.
-    // location_id?: number;
-};
-
-type UniverseNamesFragmentDefault = UniverseNamesFragment<EVEUniverseCategory>;
-type UniverseNamesFragmentLocation = UniverseNamesFragment<"station" | "solar_system" | "structure">;
-
 
 /**
  * /characters/{character_id}/contacts/

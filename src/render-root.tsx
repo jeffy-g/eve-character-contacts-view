@@ -57,12 +57,14 @@ const divideContacts = (contacts: EVEContact[]) => {
     ];
 };
 
+const hr = <Divider style={{ margin: "4px 0" }}/>;
+
 export type TRenderParams = {
     contacts: EVEContact[];
     labels: EVEContactLabel[];
 };
 
-export const renderEVEComponents: TEVEComponentRenderer2<TRenderParams> = async (
+export const renderEVEComponents: TEVEComponentRenderer<TRenderParams> = async (
     params: TRenderParams,
     characterData: EVECharacterData
 ) => {
@@ -73,44 +75,34 @@ export const renderEVEComponents: TEVEComponentRenderer2<TRenderParams> = async 
     const charIds = charOnly.map(c => c.contact_id);
 
     /* - - - resolve names - - - */
-    // resolver.addIds(charIds);
-    // for (const charId of charIds) {
-    //     if (resolver.addId(charId) === 1000) {
-    //         await resolver.resolve();
-    //     }
-    // }
-    // if (resolver.size() > 0) {
-    //     await resolver.resolve();
-    // }
     resolver.addIds(charIds);
-    await resolver.batchResolve();
+    await resolver.resolve();
     for (const c of charOnly) {
         const unf = resolver.get(c.contact_id);
         unf && (c.name = unf.name);
     }
     /* - - - resolve names - - - */
-
-    console.log(
-        JSON.stringify(charIds, null, 2), characterData
-    );
+    // console.log(
+    //     JSON.stringify(charIds, null, 2), characterData
+    // );
 
     const [
         excellent, good, neutral, bad, terrible
     ] = divideContacts(charOnly);
-    const ss = { margin: "4px 0" };
+
     return <>
         <Typography variant="h5">Excellent</Typography>
         <EVEContacts contacts={excellent} labels={labels} characterData={characterData}/>
-        <Divider style={ss}/>
+        {hr}
         <Typography variant="h5">Good</Typography>
         <EVEContacts contacts={good} labels={labels} characterData={characterData}/>
-        <Divider style={ss}/>
+        {hr}
         <Typography variant="h5">Neutral</Typography>
         <EVEContacts contacts={neutral} labels={labels} characterData={characterData}/>
-        <Divider style={ss}/>
+        {hr}
         <Typography variant="h5">Bad</Typography>
         <EVEContacts contacts={bad} labels={labels} characterData={characterData}/>
-        <Divider style={ss}/>
+        {hr}
         <Typography variant="h5">Terrible</Typography>
         <EVEContacts contacts={terrible} labels={labels} characterData={characterData}/>
     </>;
