@@ -101,16 +101,17 @@ $CHIP_SIZE: 28px;
 $CHIP_SIZE-small: 24px;
 .eve-character-chip {
     margin: 2px;
-    height: $CHIP_SIZE;
+    height: $CHIP_SIZE + 4;
     .chip-avatar {
         // transition: width 300ms ease, height 300ms ease;
         width: $CHIP_SIZE;
         height: $CHIP_SIZE;
+        margin-left: 2px;
         margin-right: -6px;
     }
 
     &.small {
-        height: $CHIP_SIZE-small;
+        height: $CHIP_SIZE-small + 4;
         .chip-avatar {
             width: $CHIP_SIZE-small;
             height: $CHIP_SIZE-small;
@@ -128,7 +129,9 @@ $CHIP_SIZE-small: 24px;
     @for $i from 1 through 5 {
         $color: nth($standing-colors, $i);
         $standing: nth($standings, $i);
-        &[data-standing="#{$standing}"] {
+        // DEVNOTE: 2019/11/6 - since the last change in the timing of applying style,
+        //   - it was necessary to use the ":not" pseudo selector.
+        &:not(:focus):not(:hover)[data-standing="#{$standing}"] {
             background-color: $color;
             color: if($color == blue, lighten($color, 48%), darken($color, 48%));
         }

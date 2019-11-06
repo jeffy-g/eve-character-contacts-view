@@ -11,7 +11,8 @@ import {
 import { renderEVEComponents } from "./render-root";
 import * as NsESIClient from "./eve/api/esi-client";
 
-import "./styles.scss";
+// import "./styles.scss";
+
 
 
 const debugLog = (tag: string, args?: any) => {

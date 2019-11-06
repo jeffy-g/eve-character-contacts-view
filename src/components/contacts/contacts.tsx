@@ -103,26 +103,26 @@ type TEVEContactsState = {
     elements: TContactChip[];
 };
 
-/**
- * this feature will be remove
- * @deprecated
- */
-const eveContactsMap: StringMap<EVEContact[]> = {};
-/**
- * this feature will be remove
- * 
- * @param character_id 
- * @param contancts 
- * @deprecated
- */
-const cacheContacts = (character_id: EVEId, contancts: EVEContact[]) => {
-    let map = eveContactsMap[character_id];
-    if (!map) {
-        map = [] as EVEContact[];
-    }
-    eveContactsMap[character_id] = map.concat(contancts);
-    // console.log(eveContactsMap);
-}
+// /**
+//  * this feature will be remove
+//  * @deprecated
+//  */
+// const eveContactsMap: StringMap<EVEContact[]> = {};
+// /**
+//  * this feature will be remove
+//  * 
+//  * @param character_id 
+//  * @param contancts 
+//  * @deprecated
+//  */
+// const cacheContacts = (character_id: EVEId, contancts: EVEContact[]) => {
+//     let map = eveContactsMap[character_id];
+//     if (!map) {
+//         map = [] as EVEContact[];
+//     }
+//     eveContactsMap[character_id] = map.concat(contancts);
+//     // console.log(eveContactsMap);
+// }
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,7 +157,7 @@ const EVEContacts = (props: EVEContactsPops) => {
 
     const { contacts, labels, characterData: { character_id }, size, accessor } = props;
     // DEVNOTE: cache contacts of character_id
-    cacheContacts(character_id, contacts);
+    // cacheContacts(character_id, contacts);
 
     const [state, setState, refElements] = useEVEContactsState(size);
     // const deleter = (instance: TContactChipInstance) => { // fix closure problem at "instance" parameter
@@ -300,7 +300,9 @@ function setUpAccessor(
         // to do at mount time
         let resetor = state.reset;
         if (accessor && !accessor.setSize) {
-            accessor.setSize = (size) => shiftSize(size);
+            accessor.setSize = size => {
+                shiftSize(size);
+            };
             accessor.reset = () => {
                 setState({ reset: ++resetor });
             };

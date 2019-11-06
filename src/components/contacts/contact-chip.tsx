@@ -90,18 +90,37 @@ standing: ${"standing"}
 label_ids: ${"label_ids"}
 `;
 
+// [2019/11/6 10:28:41]
+// only supports "logo"
+// https://images.evetech.net/alliances/434243723/logo?size=32
+
+// only supports "portrait"
+// https://images.evetech.net/characters/1338057886/portrait?size=32
+
+// only supports "logo"
+// https://images.evetech.net/corporations/98076780/logo?size=32
+
+/*
+Alliance logos: https://images.evetech.net/alliances/434243723/logo
+Character portraits: https://images.evetech.net/characters/1338057886/portrait
+Corporation logos: https://images.evetech.net/corporations/109299958/logo
+*/
 /**
  * DEVNOTE: character image type are "jpg".
  * @param kinds 
  * @param id 
  */
 const getAvatarImageUri = (
-    kinds: string,
+    kinds: "character" | "corporation" | "alliance" | "faction",
     id: number,
-    // extension: "png" | "jpg"
 ): string => {
-    const extension = kinds === "character" ? "jpg" : "png";
-    return `https://image.eveonline.com/${kinds}/${id}_32.${extension}`;
+    const path = (kinds === "character"? "portrait": "logo") + "?size=32";
+    return `https://images.evetech.net/${kinds}s/${id}/${path}`;
+
+    // return `https://imageserver.eveonline.com/${util.capitalizeToken(kinds)}/${id}_32.png`;
+
+    // const extension = kinds === "character" ? "jpg" : "png";
+    // return `https://image.eveonline.com/${kinds}/${id}_32.${extension}`;
 };
 /**
  * 

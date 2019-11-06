@@ -1,0 +1,111 @@
+/*!
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    <one line to give the program's name and a brief idea of what it does.>
+    Copyright (C) 2019  jeffy-g hirotom1107@gmail.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+*/
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: consolas;
+  font-size: 13px;
+  transition: background-color 800ms ease, color 800ms ease;
+  user-select: none;
+}
+body.dark {
+  background-color: black;
+  color: whitesmoke;
+}
+
+.auth-button {
+  position: absolute;
+  top: 17px;
+  left: 18px;
+  cursor: pointer;
+}
+.auth-button + .theme-dark {
+  position: absolute;
+}
+
+.app-title {
+  text-align: center;
+  z-index: 500;
+}
+
+.app-container {
+  --x-margin: 10px;
+  --x-margin-x2: var(--x-margin) + var(--x-margin);
+  margin: var(--x-margin) var(--x-margin) 20px;
+  position: relative;
+  width: calc(100vw - var(--x-margin-x2) - 18px);
+  height: calc(100vh - 44px - 28px);
+  box-sizing: border-box;
+  padding: 9px;
+  padding-bottom: 18px;
+  border-radius: 4px;
+}
+
+.contact-tooltip {
+  box-sizing: border-box;
+  white-space: pre !important;
+  width: auto !important;
+  font-size: 0.733rem !important;
+  padding: 6px 10px !important;
+  max-width: none !important;
+}
+
+.eve-character-chip {
+  margin: 2px;
+  height: 32px;
+}
+.eve-character-chip .chip-avatar {
+  width: 28px;
+  height: 28px;
+  margin-left: 2px;
+  margin-right: -6px;
+}
+.eve-character-chip.small {
+  height: 28px;
+}
+.eve-character-chip.small .chip-avatar {
+  width: 24px;
+  height: 24px;
+}
+.eve-character-chip:not(:focus):not(:hover)[data-standing="10"] {
+  background-color: blue;
+  color: #f5f5ff;
+}
+.eve-character-chip:not(:focus):not(:hover)[data-standing="5"] {
+  background-color: #2fccff;
+  color: #002b39;
+}
+.eve-character-chip:not(:focus):not(:hover)[data-standing="0"] {
+  background-color: whitesmoke;
+  color: #7b7b7b;
+}
+.eve-character-chip:not(:focus):not(:hover)[data-standing="-5"] {
+  background-color: orange;
+  color: #0a0700;
+}
+.eve-character-chip:not(:focus):not(:hover)[data-standing="-10"] {
+  background-color: red;
+  color: #0a0000;
+}
+
+/*# sourceMappingURL=styles.css.map */

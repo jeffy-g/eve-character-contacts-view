@@ -44,10 +44,16 @@ export const template = (literals: TemplateStringsArray, ...keys: any[]) => {
     };
 };
 
+/**
+ * 
+ * @export
+ * @param token
+ */
+export function capitalizeToken(token: string): string {
+    const head = token[0].toUpperCase();
+    return `${head}${token.substring(1)}`;
+}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//                    class or namespace declare.
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // namespace Util {
 // /**
 //  * ensure deeeep copy.

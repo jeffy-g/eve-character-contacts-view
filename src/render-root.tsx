@@ -113,14 +113,17 @@ export const renderEVEComponents: TEVEComponentRenderer<TRenderParams> = async (
 ) => {
 
     const { contacts, labels } = params;
-
-    const charOnly = contacts.filter(c => c.contact_id > 4000000);
-    const charIds = charOnly.map(c => c.contact_id);
+    /**
+     * contact_type: "character", "corporation", "alliance", "faction"
+     */
+    const contactIds = contacts.filter(c => c.contact_id > 4000000);
 
     /* - - - resolve names - - - */
-    resolver.addIds(charIds);
+    resolver.addIds(
+        contactIds.map(c => c.contact_id)
+    );
     await resolver.resolve();
-    for (const c of charOnly) {
+    for (const c of contactIds) {
         const unf = resolver.get(c.contact_id);
         unf && (c.name = unf.name);
     }
@@ -131,7 +134,7 @@ export const renderEVEComponents: TEVEComponentRenderer<TRenderParams> = async (
 
     const [
         excellent, good, neutral, bad, terrible
-    ] = divideContacts(charOnly);
+    ] = divideContacts(contactIds);
 
     return <>
         <SizerRadios/>
