@@ -162,9 +162,11 @@ export const EVEContactChip = /* React.memo */(
         const labels: string[] = [];
         if (Array.isArray(contact.label_ids)) {
             const lids = contact.label_ids;
-            labelData.filter(data => {
-                return lids.includes(data.label_id);
-            }).forEach(data => labels.push(data.label_name));
+            labelData.filter(
+                data => lids.includes(data.label_id)
+            ).forEach(
+                data => { labels.push(data.label_name); }
+            );
         }
 
         return <Tooltip title={createTitle(contact) + `labels: [${labels.join(", ")}]`}
