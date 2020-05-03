@@ -8,7 +8,7 @@ sample site: https://csb-p399l.netlify.com/
 
 > ## Getting Started
 
-Developed on [codesandbox](https://codesandbox.io/s/eve-character-contacts-view-p399l)
+Developed on [codesandbox](https://codesandbox.io/s/eve-character-contacts-view-v0sgf)
 
 > ## details
 
