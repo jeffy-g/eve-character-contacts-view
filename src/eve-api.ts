@@ -203,7 +203,13 @@ export const verify = (accessToken: string): SSOVerifyResult => {
     } as SSOVerifyResult;
 };
 /**
- * 
+ *
+ * see {@link https://eveonline-third-party-documentation.readthedocs.io/en/latest/sso/implicitflow.html Implicit Flow}
+ *
+ * Using the implicit workflow is very easy
+ *
+ *  - you simply redirect the user to the authorization endpoint, including your `client_id`, `redirect_uri` and setting `response_type` to `token`
+ *
  */
 export const createAuthUrl = (scopes: string[]) => {
     return `${eve_auth_base}?response_type=token&redirect_uri=${encodeURIComponent(

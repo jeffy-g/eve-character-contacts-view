@@ -13,11 +13,12 @@ const resolver = new IdsToNames();
 // divide Contacts
 //
 const filterContacts = (contacts: EVEContact[], statning: number) => {
-    const result = [] as EVEContact[];
-    for (const c of contacts) {
-        c.standing === statning && result.push(c);
-    }
-    return result;
+    // const result = [] as EVEContact[];
+    // for (const c of contacts) {
+    //     c.standing === statning && result.push(c);
+    // }
+    // return result;
+    return contacts.filter(c => c.standing === statning);
 };
 const contactComparator = (a: EVEContact, b: EVEContact) => {
     return a.name.localeCompare(b.name);
@@ -43,11 +44,6 @@ const divideContacts = (contacts: EVEContact[]) => {
     const neutral   = filterContacts(contacts,  0).sort(contactComparator);
     const bad       = filterContacts(contacts, -5).sort(contactComparator);
     const terrible  = filterContacts(contacts, -10).sort(contactComparator);
-    // const excellent = contacts.filter(c => c.standing === 10).sort(contactComparator);
-    // const good = contacts.filter(c => c.standing === 5).sort(contactComparator);
-    // const neutral = contacts.filter(c => c.standing === 0).sort(contactComparator);
-    // const bad = contacts.filter(c => c.standing === -5).sort(contactComparator);
-    // const terrible = contacts.filter(c => c.standing === -10).sort(contactComparator);
     return [
         excellent,
         good,
@@ -64,6 +60,7 @@ const sizers = [] as IEVEContactsAccessor[];
 for (let i = 5; i--;) {
     sizers.push({} as IEVEContactsAccessor);
 }
+
 const resetor = () => {
     sizers.forEach(sizer => {
         // sizer.reset();
@@ -156,4 +153,3 @@ export const renderEVEComponents: TEVEComponentRenderer<TRenderParams> = async (
         <EVEContacts contacts={terrible} labels={labels} characterData={characterData} accessor={sizers[4]}/>
     </>;
 };
-
