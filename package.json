@@ -17,16 +17,16 @@
     "node": ">=9"
   },
   "dependencies": {
-    "@material-ui/core": "latest",
+    "@material-ui/core": "4.11.0",
     "react": "latest",
     "react-dom": "latest",
     "react-scripts": "latest"
   },
   "devDependencies": {
-    "@types/react": "^16.9.43",
+    "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.8",
-    "sass": "latest",
-    "typescript": "latest"
+    "sass": "1.26.10",
+    "typescript": "3.9.7"
   },
   "scripts": {
     "start": "yarn sass && react-scripts start",
