@@ -38,14 +38,6 @@ type Nullable<T> = Undefable<T> | null;
  * can be `null`.
  */
 type NullOr<T> = T | null;
-// /**
-//  * get property type.
-//  */
-// type TypeOf<T, K extends keyof T> = T[K];
-// // -> same as like SkillPlanDataType["plans"]
-
-/** omit property K from type T. */
-type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 /**
  * pickup public fields and methods from `typescript` class.

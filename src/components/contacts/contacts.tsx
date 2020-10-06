@@ -170,7 +170,7 @@ const EVEContacts = (props: EVEContactsPops) => {
         const elements = refElements.current as TContactChipInstance[];
         const nid = parseInt(characterId);
         const index = elements.findIndex(
-            (e: TContactChipInstance) => e.props.contact.contact_id === nid
+            (e) => e.props.contact.contact_id === nid
         );
         if (index !== -1) {
             // const e =
@@ -310,8 +310,8 @@ function setUpAccessor(
         // at unmount
         return () => {
             if (accessor) {
-                delete accessor.setSize;
-                delete accessor.reset;
+                delete (accessor as any).setSize;
+                delete (accessor as any).reset;
             }
         };
     }, [accessor]);
