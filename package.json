@@ -1,6 +1,6 @@
 {
   "name": "eve-character-contacts-view",
-  "version": "1.0.79",
+  "version": "1.0.80",
   "description": "Displays data obtained from ESI endpoint /characters/{character_id}/contacts/",
   "keywords": [
     "EVE online",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@types/react": "^17.0.30",
     "@types/react-dom": "^17.0.10",
-    "sass": "1.43.2",
+    "sass": "1.43.3",
     "typescript": "=3.9.10"
   },
   "scripts": {
