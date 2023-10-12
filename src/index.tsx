@@ -20,6 +20,9 @@ const debugLog = (tag: string, args?: any) => {
 };
 
 function Welcome() {
+    console.log(
+        /\n\s+(?=\n)|\s+(?=\n)|`|"(?:[^\\"]|\\[^])*"|'(?:[^\\']|\\[^])*'|\//g.test("")
+    );
     return (
         <div className="App">
             <h1>Hello CodeSandbox</h1>
