@@ -28,11 +28,16 @@
     "sass": "1.56.1",
     "typescript": "=3.9.10"
   },
+  "//": {
+    "prestart": "export NODE_OPTIONS='--openssl-legacy-provider'"
+  },
   "scripts": {
     "start": "yarn sass && react-scripts start",
     "build": "yarn sass && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
+    "ic": "npx rimraf yarn.lock node_modules && yarn install",
+    "up": "yarn upgrade-interactive --latest",
     "sass": "sass ./src/styles.scss ./public/styles.css"
   },
   "browserslist": [

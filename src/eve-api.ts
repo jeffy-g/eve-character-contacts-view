@@ -93,7 +93,7 @@ const eve_auth_base = "https://login.eveonline.com/v2/oauth/authorize/";
 const client_id = "d25fb85d73fe4f65a0a558d8f345e74d";
 // TODO: where do you want to fix redirect_uri?
 // https://<codesandboxId>.codesandbox.io/callback/dummy.html
-const redirect_uri = "https://znqnn457lm.codesandbox.io/callback/dummy.html";
+const redirect_uri = "https://csb-p399l.netlify.com/callback/dummy.html";
 
 const debugLog = (tag: string, args?: any) => {
     console.log(`${tag}, authWindow:`, authWindow, args);
