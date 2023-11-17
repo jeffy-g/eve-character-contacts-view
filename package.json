@@ -33,6 +33,7 @@
   },
   "scripts": {
     "prestart": "bash -c \"export NODE_OPTIONS='--openssl-legacy-provider'\"",
+    "prebuild": "bash -c \"export NODE_OPTIONS='--openssl-legacy-provider'\"",
     "start": "yarn sass && react-scripts start",
     "build": "yarn sass && react-scripts build",
     "test": "react-scripts test --env=jsdom",
