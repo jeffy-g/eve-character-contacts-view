@@ -95,7 +95,7 @@ $PAGEs-MARGIN: 10px;
 //   5.0  (Good :lightblue)
 //   0.0  (Neutral :whitesmoke)
 //  -5.0  (Bad :orange)
-// -10.0  (Terrible :red)
+// -10.0  (Terrible :#f13030)
 //
 $CHIP_SIZE: 28px;
 $CHIP_SIZE-small: 24px;
@@ -124,7 +124,7 @@ $CHIP_SIZE-small: 24px;
     }
 
     // DEVNOTE: lightblue is a little too bright, so I adjusted it.
-    $standing-colors: blue, #2fccff, whitesmoke, orange, red;
+    $standing-colors: #3f8fed, #2fccff, whitesmoke, orange, #f13030;
     $standings: 10, 5, 0, -5, -10;
     @for $i from 1 through 5 {
         $color: nth($standing-colors, $i);
@@ -133,7 +133,7 @@ $CHIP_SIZE-small: 24px;
         //   - it was necessary to use the ":not" pseudo selector.
         &:not(:focus):not(:hover)[data-standing="#{$standing}"] {
             background-color: $color;
-            color: if($color == blue, lighten($color, 48%), darken($color, 48%));
+            color: if($color == #3f8fed, lighten($color, 48%), darken($color, 48%));
         }
     }
     // &[data-standing="10"] {
@@ -152,7 +152,7 @@ $CHIP_SIZE-small: 24px;
     //     color: darken($bg, 48%);
     // }
     // &[data-standing="-10"] {
-    //     $bg: red;
+    //     $bg: #f13030;
     //     background-color: $bg;
     //     color: darken($bg, 48%);
     // }

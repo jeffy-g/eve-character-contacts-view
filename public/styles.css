@@ -88,8 +88,8 @@ body.dark {
   height: 24px;
 }
 .eve-character-chip:not(:focus):not(:hover)[data-standing="10"] {
-  background-color: blue;
-  color: #f5f5ff;
+  background-color: #3f8fed;
+  color: white;
 }
 .eve-character-chip:not(:focus):not(:hover)[data-standing="5"] {
   background-color: #2fccff;
@@ -104,8 +104,8 @@ body.dark {
   color: #0a0700;
 }
 .eve-character-chip:not(:focus):not(:hover)[data-standing="-10"] {
-  background-color: red;
-  color: #0a0000;
+  background-color: #f13030;
+  color: #290303;
 }
 
 /*# sourceMappingURL=styles.css.map */
