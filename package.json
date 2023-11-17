@@ -1,6 +1,6 @@
 {
   "name": "eve-character-contacts-view",
-  "version": "1.0.152",
+  "version": "1.0.153",
   "description": "Displays data obtained from ESI endpoint /characters/{character_id}/contacts/",
   "keywords": [
     "EVE online",
@@ -14,7 +14,7 @@
     "email": "hirotom1107@gmail.com"
   },
   "engines": {
-    "node": ">=9"
+    "node": ">=9.11.2"
   },
   "dependencies": {
     "@material-ui/core": "4.12.4",
