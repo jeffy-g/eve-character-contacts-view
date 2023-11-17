@@ -298,6 +298,7 @@ class ESIClient /* implements IESIClient */ {
                         }
                         return responseData;
                     } else {
+                        // @ts-ignore
                         remainResponseData && Object.assign(responseData, remainResponseData);
                         return responseData;
                     }

@@ -20,18 +20,19 @@
     "@material-ui/core": "4.12.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-scripts": "=3.4.4"
+    "react-scripts": "5.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
-    "sass": "1.56.1",
-    "typescript": "=3.9.10"
+    "sass": "1.69.5",
+    "typescript": "5.2.2"
   },
   "//": {
     "prestart": "export NODE_OPTIONS='--openssl-legacy-provider'"
   },
   "scripts": {
+    "prestart": "bash -c \"export NODE_OPTIONS='--openssl-legacy-provider'\"",
     "start": "yarn sass && react-scripts start",
     "build": "yarn sass && react-scripts build",
     "test": "react-scripts test --env=jsdom",

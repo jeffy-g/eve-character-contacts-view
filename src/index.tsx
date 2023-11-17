@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import {
     launchAuthWindow,
@@ -31,6 +32,7 @@ function Welcome() {
     );
 }
 
+let refactRoot: ReturnType<typeof createRoot>;
 /**
  *
  */
@@ -39,10 +41,14 @@ const renderComponent = (jsx: JSX.Element) => {
     if (root === null) {
         throw Error("cannot render react components!");
     }
-    if (root.children.length) {
-        ReactDOM.unmountComponentAtNode(root);
+    if (!refactRoot) {
+        refactRoot = createRoot(root);
     }
-    ReactDOM.render(jsx, root);
+    // if (root.children.length) {
+    //     // ReactDOM.unmountComponentAtNode(root);
+    //     refactRoot.unmount();
+    // }
+    refactRoot.render(jsx);
 };
 
 
@@ -61,7 +67,7 @@ const authCallback: TAuthorizationCallback = async accessToken => {
     const verifyData: SSOVerifyResult = verify(accessToken);
 
     sharedESI.useAccessToken(accessToken);
-    const [contacts, labels] = await Promise.all<EVEContact[], EVEContactLabel[]>([
+    const [contacts, labels] = await Promise.all([
         // step 1. get contacts data
         processESI(
             `/characters/${verifyData.character_id}/contacts/`,
@@ -72,7 +78,7 @@ const authCallback: TAuthorizationCallback = async accessToken => {
             `/characters/${verifyData.character_id}/contacts/labels/`,
             // accessToken
         )
-    ]);
+    ]) as [EVEContact[], EVEContactLabel[]];
 
     DEBUG && console.log(labels);
     // step 3. create eve contacts components
