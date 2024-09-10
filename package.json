@@ -1,6 +1,6 @@
 {
   "name": "eve-character-contacts-view",
-  "version": "1.0.212",
+  "version": "1.0.213",
   "description": "Displays data obtained from ESI endpoint /characters/{character_id}/contacts/",
   "keywords": [
     "EVE online",
@@ -26,7 +26,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "sass": "1.78.0",
-    "typescript": "5.5.4"
+    "typescript": "5.6.2"
   },
   "//": {
     "prestart": "export NODE_OPTIONS='--openssl-legacy-provider'"
