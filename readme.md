@@ -4,7 +4,7 @@
 
 Display ESI endpoint [`/characters/{character_id}/contacts/`](https://esi.evetech.net/ui/#/Contacts/get_characters_character_id_contacts)
 
-sample site: https://csb-p399l.netlify.com/
+sample site: https://eve-character-contacts.netlify.app/
 
 > ## Getting Started
 
